@@ -22,7 +22,7 @@ Then in the project folder run
 to generate a MII Broad Consent document from the output of a REDCap form you can run for example
 ```mii_broad_consent_mapper %  ./gradlew run --args='--date_of_birth=12.12.2010 --redcap_formular=src/test/resources/redcap_formular.txt --output=tst.json'```
 
-For tests run
+For tests you can run
 ```mii_broad_consent_mapper %  ./gradlew test```
 
 For example you can run 

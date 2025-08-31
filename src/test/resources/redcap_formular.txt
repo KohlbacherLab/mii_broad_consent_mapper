@@ -1,0 +1,40 @@
+[
+  {
+    "psn": "TEST",
+    "redcap_repeat_instrument": "",
+    "redcap_repeat_instance": "",
+    "datum_einwillig_forsch": "",
+    "vers_einwillig_forsch": "",
+    "bc_sb_1": "",
+    "bc_sb_2": "",
+    "bc_sb_3": "",
+    "bc_sb_4": "",
+    "bc_sb_5": "",
+    "bc_sb_6": "",
+    "bc_sb_7": "",
+    "bc_sb_8": "",
+    "bc_sb_9": "",
+    "datum_einwillig_f_wid": "",
+    "umfang_einwillig_f_wid": "",
+    "forschungseinwilligungen_complete": ""
+  },
+  {
+    "psn": "TEST",
+    "redcap_repeat_instrument": "Forschungseinwilligungen",
+    "redcap_repeat_instance": 1,
+    "datum_einwillig_forsch": "2025-06-27",
+    "vers_einwillig_forsch": "Kinder v.1.7.2",
+    "bc_sb_1": "Yes",
+    "bc_sb_2": "Yes",
+    "bc_sb_3": "Yes",
+    "bc_sb_4": "Yes",
+    "bc_sb_5": "Yes",
+    "bc_sb_6": "Yes",
+    "bc_sb_7": "Yes",
+    "bc_sb_8": "Yes",
+    "bc_sb_9": "Yes",
+    "datum_einwillig_f_wid": "",
+    "umfang_einwillig_f_wid": "",
+    "forschungseinwilligungen_complete": "Complete"
+  }
+]

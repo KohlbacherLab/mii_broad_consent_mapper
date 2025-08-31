@@ -8,6 +8,9 @@ import org.hl7.fhir.r4.model.Consent;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -58,6 +61,8 @@ public class ConsentMapperParents_1_7_2_from_REDCap {
         options.addOption(consentREDCap);
 
         Option output = new Option("o", "output", true, "output file");
+        options.addOption(output);
+
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
         CommandLine cmd = null;
@@ -73,7 +78,8 @@ public class ConsentMapperParents_1_7_2_from_REDCap {
         final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         Date birthday = dateFormat.parse("01." + cmd.getOptionValue("date_of_birth"));
         String outputFilePath = cmd.getOptionValue("output");
-        String redcapFormular = cmd.getOptionValue("redcap_formular");
+        String redcapFormularFile = cmd.getOptionValue("redcap_formular");
+        String redcapFormular = Files.readString(Paths.get(redcapFormularFile), StandardCharsets.UTF_8);
         Consent consent = makeConsent(redcapFormular, birthday);
         var jsonParser = forR4Cached().newJsonParser();
         jsonParser.encodeResourceToWriter(consent, new FileWriter(outputFilePath));

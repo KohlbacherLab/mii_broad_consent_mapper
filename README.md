@@ -27,8 +27,7 @@ For tests you can run
 
 For example you can run 
 
-```de.ukt.mvh.CLIConsentMapperOlderMinors_1_7_2 --date_of_birth=12.2010 --date_of_consent=04.07.2025 -o outfileOlderMinors.json --consent_pat_data_1=true --consent_insurance_data_2=true --consent_contact_5=false```
-
+```./gradlew run -PmainClass=de.ukt.mvh.CLIConsentMapperOlderMinors_1_7_2 --args="--date_of_birth=12.2010 --date_of_consent=04.07.2025 -o outfileOlderMinors.json --consent_pat_data_1=true --consent_insurance_data_2=true --consent_contact_5=false"```
 
 
 

@@ -32,3 +32,9 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+run {
+    if (project.hasProperty('mainClass')) {
+        mainClass = project.property('mainClass')
+    }
+}

@@ -51,7 +51,7 @@ public class ConsentMapperParents_1_7_2_from_REDCap {
     public static void main(String[] args) throws IOException, java.text.ParseException {
         Options options = new Options();
 
-        Option dateBirth = new Option("d", "date_of_birth", true,
+        Option dateBirth = new Option("b", "date_of_birth", true,
                 "date minor was born format must be MM.YYYY - day is skipped for anonymization");
         dateBirth.setRequired(true);
         options.addOption(dateBirth);

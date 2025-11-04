@@ -17,12 +17,12 @@ public class CLIConsentMapper_1_7_2 {
     public static void main(String[] args) throws IOException, java.text.ParseException {
         Options options = new Options();
 
-        Option dateConsent = new Option("d", "date_of_consent", true,
+        Option dateConsent = new Option("c", "date_of_consent", true,
                 "date consent was signed format must be DD.MM.YYYY");
         dateConsent.setRequired(true);
         options.addOption(dateConsent);
 
-        Option dateBirth = new Option("d", "date_of_birth", true,
+        Option dateBirth = new Option("b", "date_of_birth", true,
                 "date minor was born format must be MM.YYYY - day is skipped for anonymization");
         dateBirth.setRequired(true);
         options.addOption(dateBirth);

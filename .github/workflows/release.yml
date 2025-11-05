@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+  contents: write
+  pull-requests: write
+  packages: write
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout
+        if: steps.release.outputs.releases_created == 'true'
+        uses: actions/checkout@v4
+
+      - name: Setup JDK
+        if: steps.release.outputs.releases_created == 'true'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Setup Gradle
+        if: steps.release.outputs.releases_created == 'true'
+        uses: gradle/actions/setup-gradle@v5
+
+      - name: Publish jar to GitHub Packages
+        if: steps.release.outputs.releases_created == 'true'
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            #          VERSION: ${{ steps.release.outputs['major'] }}.${{ steps.release.outputs['minor'] }}.${{ steps.release.outputs['patch'] }}    
+            #        run: ./gradlew -Pversion=${{ VERSION }} publish
+        run: ./gradlew publish

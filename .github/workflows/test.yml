@@ -7,8 +7,8 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
-permissions: write-all
-  #  contents: read
+permissions:
+  contents: read
 
 defaults:
   run:

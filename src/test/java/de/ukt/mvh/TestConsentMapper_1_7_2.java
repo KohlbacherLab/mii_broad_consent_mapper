@@ -15,6 +15,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.io.FileReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import static ca.uhn.fhir.context.FhirContext.forR4Cached;
 
@@ -27,9 +28,10 @@ public class TestConsentMapper_1_7_2 {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
         consentDate = dateFormat.parse("2025-06-27T00:00:00+02");
         birthday = dateFormat.parse("2020-05-13T00:00:00+02");
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT+2:00"));
     }
 
-/*
+
     @Test
     public void testConsentMapper() throws Exception {
         ConsentMapper_1_7_2 mapper = new ConsentMapper_1_7_2();
@@ -44,7 +46,7 @@ public class TestConsentMapper_1_7_2 {
         var targetConsent = (Resource) jsonParser.parseResource(new FileReader(classLoader.getResource("consent.json").getPath()));
         Assertions.assertEquals(jsonParser.encodeResourceToString(targetConsent), jsonParser.encodeResourceToString(consent));
     }
-*/
+
 
     @Test
     public void testConsentMapperParents() throws Exception {

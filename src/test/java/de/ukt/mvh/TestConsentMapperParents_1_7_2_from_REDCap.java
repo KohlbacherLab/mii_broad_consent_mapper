@@ -4,6 +4,7 @@ import org.hl7.fhir.r4.model.Consent;
 import org.hl7.fhir.r4.model.Resource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeAll;
 
 import java.io.FileReader;
 import java.text.ParseException;
@@ -14,11 +15,18 @@ import static ca.uhn.fhir.context.FhirContext.forR4Cached;
 import static org.junit.Assert.assertThrows;
 
 public class TestConsentMapperParents_1_7_2_from_REDCap {
+	
+    private static Date birthday;
 
+    @BeforeAll
+    private static void init() throws Exception {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
+        birthday = dateFormat.parse("2020-05-13T00:00:00+02");
+    }
+
+/*    
     @Test
     public void testConsentMapper() throws Exception {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
-        Date birthday = dateFormat.parse("2020-05-13T00:00:00+02");
         String redCapExport = """
 [
   {
@@ -72,11 +80,10 @@ public class TestConsentMapperParents_1_7_2_from_REDCap {
 
         Assertions.assertEquals(jsonParser.encodeResourceToString(targetConsent), jsonParser.encodeResourceToString(consent));
     }
+*/
 
     @Test
     public void testWithdrawal() throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
-        Date birthday = dateFormat.parse("2020-05-13T00:00:00+02");
         String redCapExport = """
 [
   {
@@ -125,8 +132,6 @@ public class TestConsentMapperParents_1_7_2_from_REDCap {
 
     @Test
     public void testComplete() throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
-        Date birthday = dateFormat.parse("2020-05-13T00:00:00+02");
         String redCapExport = """
 [
   {

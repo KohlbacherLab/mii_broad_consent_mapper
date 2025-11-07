@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import static ca.uhn.fhir.context.FhirContext.forR4Cached;
 import static org.junit.Assert.assertThrows;
@@ -22,9 +23,10 @@ public class TestConsentMapperParents_1_7_2_from_REDCap {
     private static void init() throws Exception {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
         birthday = dateFormat.parse("2020-05-13T00:00:00+02");
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT+2:00"));
     }
 
-/*    
+
     @Test
     public void testConsentMapper() throws Exception {
         String redCapExport = """
@@ -80,7 +82,6 @@ public class TestConsentMapperParents_1_7_2_from_REDCap {
 
         Assertions.assertEquals(jsonParser.encodeResourceToString(targetConsent), jsonParser.encodeResourceToString(consent));
     }
-*/
 
     @Test
     public void testWithdrawal() throws ParseException {

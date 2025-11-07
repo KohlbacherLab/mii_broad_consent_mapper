@@ -5,48 +5,46 @@ import de.ukt.mvh.util.ConsentMapper_12_to_17_1_7_2;
 import de.ukt.mvh.util.ConsentMapper_1_7_2;
 import de.ukt.mvh.util.ConsentMapper_7_to_11_1_7_2;
 import org.hl7.fhir.r4.model.Consent;
-import org.hl7.fhir.r4.model.Resource;
+import ca.uhn.fhir.parser.IParser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-
-import java.io.FileReader;
-import java.text.SimpleDateFormat;
+import java.io.InputStreamReader;
 import java.util.Date;
-import java.util.TimeZone;
-
 import static ca.uhn.fhir.context.FhirContext.forR4Cached;
+import static org.apache.commons.lang3.time.DateUtils.addYears;
 
 
 public class TestConsentMapper_1_7_2 {
+
+    private static Consent targetConsent;
     private static Date consentDate;
     private static Date birthday;
+
     @BeforeAll
     public static void init() throws Exception {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
-        consentDate = dateFormat.parse("2025-06-27T00:00:00+02");
-        birthday = dateFormat.parse("2020-05-13T00:00:00+02");
-        TimeZone.setDefault(TimeZone.getTimeZone("GMT+2:00"));
+       var classLoader = TestConsentMapper_1_7_2.class.getClassLoader();
+       var jsonParser = forR4Cached().newJsonParser();
+       targetConsent = jsonParser.parseResource(Consent.class, new InputStreamReader(classLoader.getResourceAsStream("consent.json")));
+       consentDate = targetConsent.getDateTime();
+       birthday = addYears(targetConsent.getProvision().getPeriod().getEnd(), -18);
     }
-
 
     @Test
     public void testConsentMapper() throws Exception {
         ConsentMapper_1_7_2 mapper = new ConsentMapper_1_7_2();
         Consent consent = mapper.makeConsent(consentDate);
-        consent.setProvision(mapper.makeProvisions(
-                consentDate,
-                birthday,
-                true, true, true,true,true,true,true,true,true, null, null));
-        var jsonParser = forR4Cached().newJsonParser();
-
-        ClassLoader classLoader = getClass().getClassLoader();
-        var targetConsent = (Resource) jsonParser.parseResource(new FileReader(classLoader.getResource("consent.json").getPath()));
-        Assertions.assertEquals(jsonParser.encodeResourceToString(targetConsent), jsonParser.encodeResourceToString(consent));
+        consent.setProvision(
+          mapper.makeProvisions(
+            consentDate,
+            birthday,
+            true,true,true,true,true,true,true,true,true,null,null
+          )
+        );
+        Assertions.assertTrue(consent.equalsDeep(targetConsent));
     }
-
 
     @Test
     public void testConsentMapperParents() throws Exception {

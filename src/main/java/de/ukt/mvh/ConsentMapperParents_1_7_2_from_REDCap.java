@@ -23,12 +23,13 @@ public class ConsentMapperParents_1_7_2_from_REDCap {
         JsonObject jsonObject = JsonParser.parseString(redcapFormular).getAsJsonArray().get(1).getAsJsonObject();
         final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date consentDate = dateFormat.parse(jsonObject.get("datum_einwillig_forsch").getAsString());
-        ConsentMapperParents_1_7_2 mapper = new ConsentMapperParents_1_7_2();
+        boolean isNotRevoked = jsonObject.get("datum_einwillig_f_wid").getAsString().contentEquals("");
+        ConsentMapperParents_1_7_2 mapper = new ConsentMapperParents_1_7_2(!isNotRevoked);
         Consent consent = mapper.makeConsent(consentDate);
         if(!jsonObject.get("forschungseinwilligungen_complete").getAsString().contentEquals("Complete")) {
             throw new RuntimeException("REDCap form is not completed. Cannot generate FHIR Consent.");
         }
-        if(jsonObject.get("datum_einwillig_f_wid").getAsString().contentEquals("")) {  // no withdrawal.
+        if(isNotRevoked) {  // no withdrawal.
             consent.setProvision(mapper.makeProvisions(
                     consentDate,
                     birthday,
@@ -42,6 +43,18 @@ public class ConsentMapperParents_1_7_2_from_REDCap {
                     jsonObject.get("bc_sb_8").getAsString().contentEquals("Yes"),
                     jsonObject.get("bc_sb_9").getAsString().contentEquals("Yes"),
                     null, null
+            ));
+        } else {
+            consent.setProvision(mapper.revokeProvisions(
+                    consentDate,
+                    birthday,
+                    true,
+                    false,
+                    true,
+                    true,
+                    true,
+                    true,
+                    false
             ));
         }
         return consent;

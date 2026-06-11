@@ -34,7 +34,7 @@ public class TestConsentMapper_1_7_2 {
 
     @Test
     public void testConsentMapper() throws Exception {
-        ConsentMapper_1_7_2 mapper = new ConsentMapper_1_7_2();
+        ConsentMapper_1_7_2 mapper = new ConsentMapper_1_7_2("urn:oid:2.16.840.1.113883.3.1937.777.24.2.2079", true);
         Consent consent = mapper.makeConsent(consentDate);
         consent.setProvision(
           mapper.makeProvisions(
@@ -58,7 +58,7 @@ public class TestConsentMapper_1_7_2 {
     }
 
     @ParameterizedTest
-    @CsvSource({"0,0,7", "1,8,10", "2,11,14", "3,15,18", "4,19,23", "5,24,24", "6,25,27", "7,28,30", "8,31,31", "9,32,32", "10,33,33"})
+    @CsvSource({"0,0,7", "1,8,8", "2,9,12", "3,13,16", "4,17,21", "5,22,22", "6,23,25", "7,26,28", "8,29,29", "9,30,30", "10,31,31"})
     public void testPermitDeny(int i, int provStart, int provEnd) {
         ConsentMapper_1_7_2 mapper = new ConsentMapper_1_7_2();
         Consent consent = mapper.makeConsent(consentDate);
@@ -66,7 +66,7 @@ public class TestConsentMapper_1_7_2 {
                 consentDate,
                 birthday,
                 i == 0, i == 1, i == 2, i == 3, i == 4, i == 5, i == 6, i == 7, i == 8, i == 9, i == 10));
-        Assertions.assertEquals(35, consent.getProvision().getProvision().size());
+        Assertions.assertEquals(33, consent.getProvision().getProvision().size());
         for(int j = 0; j < consent.getProvision().getProvision().size() - 1; ++j){
             Consent.ConsentProvisionType val = (j >= provStart && j <= provEnd) ? Consent.ConsentProvisionType.PERMIT : Consent.ConsentProvisionType.DENY;
             Assertions.assertEquals(val, consent.getProvision().getProvision().get(j).getType());
@@ -82,7 +82,7 @@ public class TestConsentMapper_1_7_2 {
                 consentDate,
                 birthday,
                 true, true));
-        Assertions.assertEquals(29, consent.getProvision().getProvision().size());
+        Assertions.assertEquals(27, consent.getProvision().getProvision().size());
     }
 
     @Test
@@ -93,11 +93,11 @@ public class TestConsentMapper_1_7_2 {
                 consentDate,
                 birthday,
                 true, true, false, false, true, null, null));
-        Assertions.assertEquals(30, consent.getProvision().getProvision().size());
+        Assertions.assertEquals(28, consent.getProvision().getProvision().size());
     }
 
     @ParameterizedTest
-    @CsvSource({"0,0,7", "1,8,10", "2,11,14", "3,15,18", "4,19,23", "5,24,24", "6,25,27", "7,28,30", "8,31,31", "9,32,32", "10,33,33"})
+    @CsvSource({"0,0,7", "1,8,8", "2,9,12", "3,13,16", "4,17,21", "5,22,22", "6,23,25", "7,26,28", "8,29,29", "9,30,30", "10,31,31"})
     public void testNullArg(int i, int provStart, int provEnd) {
         ConsentMapper_12_to_17_1_7_2 mapper = new ConsentMapper_12_to_17_1_7_2(true, true);
         Consent consent = mapper.makeConsent(consentDate);
@@ -105,6 +105,6 @@ public class TestConsentMapper_1_7_2 {
                 consentDate,
                 birthday,
                 i == 0 ? null : true, i == 1 ? null : true, i == 2 ? null : true, i == 3 ? null : true, i == 4 ? null : true, i == 5 ? null : true, i == 6 ? null : true, i == 7 ? null : true, i == 8 ? null : true, i == 9 ? null : true, i == 10 ? null : true));
-        Assertions.assertEquals(35 - (provEnd - provStart + 1), consent.getProvision().getProvision().size());
+        Assertions.assertEquals(33 - (provEnd - provStart + 1), consent.getProvision().getProvision().size());
     }
 }

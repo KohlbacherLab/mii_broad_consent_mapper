@@ -89,11 +89,11 @@ public class CLIRevokedConsentMapper_1_7_2 {
                 consentDate,
                 birthday,
                 cmd.hasOption("incl_pat_data_retro_1_3"),
+                cmd.hasOption("incl_data_non_dsgvo_1_3"),
                 cmd.hasOption("incl_insurance_data"),
                 cmd.hasOption("incl_bio_samples_3_3"),
                 cmd.hasOption("incl_addl_bio_samples_3_3"),
                 cmd.hasOption("incl_bio_samples_retro_3_3"),
-                cmd.hasOption("incl_data_non_dsgvo_1_3"),
                 cmd.hasOption("incl_samples_non_dsgvo_3_3")
         ));
         var jsonParser = forR4Cached().newJsonParser();

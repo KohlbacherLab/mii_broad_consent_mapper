@@ -128,9 +128,6 @@ public class TestConsentMapperParents_1_7_2_from_REDCap {
         ClassLoader classLoader = getClass().getClassLoader();
         var targetConsent = (Resource) jsonParser.parseResource(new FileReader(classLoader.getResource("revoked_consent_parents.json").getPath()));
 
-        System.out.println(jsonParser.encodeResourceToString(targetConsent));
-        System.out.println(jsonParser.encodeResourceToString(consent));
-
         Assertions.assertEquals(jsonParser.encodeResourceToString(targetConsent), jsonParser.encodeResourceToString(consent));
     }
 

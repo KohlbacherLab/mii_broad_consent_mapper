@@ -65,7 +65,9 @@ public class CLIConsentMapperYoungMinors_1_7_2 {
                 Boolean.valueOf(cmd.getOptionValue("consent_pat_bio_samples"))
         ));
         var jsonParser = forR4Cached().newJsonParser();
-        jsonParser.encodeResourceToWriter(consent, new FileWriter(outputFilePath));
+        FileWriter fileWriter = new FileWriter(outputFilePath);
+        jsonParser.encodeResourceToWriter(consent, fileWriter);
+        fileWriter.close();
         System.out.printf(jsonParser.encodeResourceToString(consent));
     }
 }

@@ -118,7 +118,7 @@ public class ConsentMapper_1_7_2 {
                 this.forMinors ? addYears(birthday, 18) : addYears(dateConsent, 30));
 
         return makeProvisionsWithDetailedPeriods(
-                periodRevoked, periodRevoked, periodLong, periodLong,
+                periodRevoked, periodRevoked, periodRevoked, periodLong,
                 false, includeRetrospectiveDataCollection ? false : null,
                 includeInsuranceDataCollection ? false : null,
                 includeInsuranceDataCollection ? false : null,

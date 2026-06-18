@@ -95,7 +95,9 @@ public class ConsentMapperParents_1_7_2_from_REDCap {
         String redcapFormular = Files.readString(Paths.get(redcapFormularFile), StandardCharsets.UTF_8);
         Consent consent = makeConsent(redcapFormular, birthday);
         var jsonParser = forR4Cached().newJsonParser();
-        jsonParser.encodeResourceToWriter(consent, new FileWriter(outputFilePath));
+        FileWriter fileWriter = new FileWriter(outputFilePath);
+        jsonParser.encodeResourceToWriter(consent, fileWriter);
+        fileWriter.close();
         System.out.printf(jsonParser.encodeResourceToString(consent));
     }
 }

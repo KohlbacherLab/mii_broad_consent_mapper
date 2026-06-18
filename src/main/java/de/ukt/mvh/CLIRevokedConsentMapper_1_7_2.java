@@ -17,7 +17,7 @@ public class CLIRevokedConsentMapper_1_7_2 {
     public static void main(String[] args) throws IOException, java.text.ParseException {
         Options options = new Options();
 
-        Option dateConsent = new Option("d", "date_of_consent", true,
+        Option dateConsent = new Option("c", "date_of_consent", true,
                 "date consent was signed format must be DD.MM.YYYY");
         dateConsent.setRequired(true);
         options.addOption(dateConsent);
@@ -29,34 +29,34 @@ public class CLIRevokedConsentMapper_1_7_2 {
 
         Option forMinorsOpt = new Option("m", "for_minors", true,
                 "Whether this consent refers to a minor and was filled out by the guardians.");
-        dateBirth.setRequired(true);
+        forMinorsOpt.setRequired(true);
         options.addOption(forMinorsOpt);
 
-        Option consentPatDataRetro13 = new Option("q2", "incl_pat_data_retro_1_3", true,
+        Option consentPatDataRetro13 = new Option("q2", "incl_pat_data_retro_1_3", false,
                 "Whether the retrospective data module was included in section 1.3.");
         options.addOption(consentPatDataRetro13);
 
-        Option consentInsuranceData = new Option("q3", "incl_insurance_data", true,
+        Option consentInsuranceData = new Option("q3", "incl_insurance_data", false,
                 "Whether the module for health insurance data was included in section 2.1/2.2.");
         options.addOption(consentInsuranceData);
 
-        Option consentBioSamples33 = new Option("q5", "incl_bio_samples_3_3", true,
+        Option consentBioSamples33 = new Option("q5", "incl_bio_samples_3_3", false,
                 "Whether the bio sample module was included in section 3.3.");
         options.addOption(consentBioSamples33);
 
-        Option consentBioSamplesAddl33 = new Option("q6", "incl_addl_bio_samples_3_3", true,
+        Option consentBioSamplesAddl33 = new Option("q6", "incl_addl_bio_samples_3_3", false,
                 "Whether the module for collecting small extra amounts of bio samples was included in section 3.3.");
         options.addOption(consentBioSamplesAddl33);
 
-        Option consentBioSamplesRetro33 = new Option("q7", "incl_bio_samples_retro_3_3", true,
+        Option consentBioSamplesRetro33 = new Option("q7", "incl_bio_samples_retro_3_3", false,
                 "Whether the module for  retrospective bio samples was included in section 3.3.");
         options.addOption(consentBioSamplesRetro33);
 
-        Option consentDataNonDSGVO = new Option("q10", "incl_data_non_dsgvo_1_3", true,
+        Option consentDataNonDSGVO = new Option("q10", "incl_data_non_dsgvo_1_3", false,
                 "Whether the module for sharing data with researchers in countries with less data was included in section 1.5.");
         options.addOption(consentDataNonDSGVO);
 
-        Option consentSamplesNonDSGVO = new Option("q11", "incl_samples_non_dsgvo_3_3", true,
+        Option consentSamplesNonDSGVO = new Option("q11", "incl_samples_non_dsgvo_3_3", false,
                 "Whether the module for sharing bio samples with researchers in countries with less data was included in section 3.3.");
         options.addOption(consentSamplesNonDSGVO);
 
@@ -97,7 +97,9 @@ public class CLIRevokedConsentMapper_1_7_2 {
                 cmd.hasOption("incl_samples_non_dsgvo_3_3")
         ));
         var jsonParser = forR4Cached().newJsonParser();
-        jsonParser.encodeResourceToWriter(consent, new FileWriter(outputFilePath));
+        FileWriter fileWriter = new FileWriter(outputFilePath);
+        jsonParser.encodeResourceToWriter(consent, fileWriter);
+        fileWriter.close();
         System.out.printf(jsonParser.encodeResourceToString(consent));
     }
 }

@@ -2,9 +2,12 @@ package de.ukt.mvh;
 
 import org.hl7.fhir.r4.model.Consent;
 import ca.uhn.fhir.parser.IParser;
+import org.hl7.fhir.r4.model.Resource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
+
+import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.util.Date;
@@ -75,7 +78,7 @@ public class TestConsentMapperParents_1_7_2_from_REDCap {
     }
 
     @Test
-    public void testWithdrawal() throws ParseException {
+    public void testWithdrawal() throws Exception {
         String redCapExport = """
 [
   {
@@ -109,7 +112,7 @@ public class TestConsentMapperParents_1_7_2_from_REDCap {
     "bc_sb_4": "Yes",
     "bc_sb_5": "Yes",
     "bc_sb_6": "Yes",
-    "bc_sb_7": "Yes",
+    "bc_sb_7": "No",
     "bc_sb_8": "Yes",
     "bc_sb_9": "Yes",
     "datum_einwillig_f_wid": "2025-06-29",
@@ -118,8 +121,14 @@ public class TestConsentMapperParents_1_7_2_from_REDCap {
   }
 ]
 """;
-        Consent consent = ConsentMapperParents_1_7_2_from_REDCap.makeConsent(redCapExport,birthday);
-        Assertions.assertEquals(0, consent.getProvision().getProvision().size());
+        Consent consent = ConsentMapperParents_1_7_2_from_REDCap.makeConsent(redCapExport, birthday);
+        Assertions.assertEquals("urn:oid:2.16.840.1.113883.3.1937.777.24.2.2722", consent.getPolicy().get(0).getUri());
+
+        var jsonParser = forR4Cached().newJsonParser();
+        ClassLoader classLoader = getClass().getClassLoader();
+        var targetConsent = (Resource) jsonParser.parseResource(new FileReader(classLoader.getResource("revoked_consent_parents.json").getPath()));
+
+        Assertions.assertEquals(jsonParser.encodeResourceToString(targetConsent), jsonParser.encodeResourceToString(consent));
     }
 
     @Test

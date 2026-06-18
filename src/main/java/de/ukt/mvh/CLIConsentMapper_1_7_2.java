@@ -117,7 +117,9 @@ public class CLIConsentMapper_1_7_2 {
                 Boolean.valueOf(cmd.getOptionValue("consent_samples_non_dsgvo_3_3"))
         ));
         var jsonParser = forR4Cached().newJsonParser();
-        jsonParser.encodeResourceToWriter(consent, new FileWriter(outputFilePath));
+        FileWriter fileWriter = new FileWriter(outputFilePath);
+        jsonParser.encodeResourceToWriter(consent, fileWriter);
+        fileWriter.close();
         System.out.printf(jsonParser.encodeResourceToString(consent));
     }
 }

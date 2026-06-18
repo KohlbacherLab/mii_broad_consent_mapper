@@ -16,6 +16,8 @@ import static org.apache.commons.lang3.time.DateUtils.addYears;
 public class ConsentMapper_1_7_2 {
 
     private static final String CONSENT_VERSION_1_7_2 = "urn:oid:2.16.840.1.113883.3.1937.777.24.2.2079";
+    public static final String CONSENT_REVOKED_VERSION_1_7_2 = "urn:oid:2.16.840.1.113883.3.1937.777.24.2.2722";
+
     private static final String CONSENT_TYPE = "https://www.medizininformatik-initiative.de/fhir/modul-consent/StructureDefinition/mii-pr-consent-einwilligung";
     private static final String CONSENT_MII_CATEGORY_SYS = "https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-consent_category";
     private static final String CONSENT_LOINC_CATEGORY_SYS = "http://loinc.org";
@@ -50,7 +52,7 @@ public class ConsentMapper_1_7_2 {
         consent.setDateTime(date);
         consent.setStatus(Consent.ConsentState.ACTIVE);
         consent.setPolicy(List.of(
-                        new Consent.ConsentPolicyComponent().setUri(this.consentVersion)));
+                new Consent.ConsentPolicyComponent().setUri(this.consentVersion)));
         consent.setCategory(Arrays.asList(loincCode, miiCode));
         return consent;
     }
@@ -79,7 +81,8 @@ public class ConsentMapper_1_7_2 {
             @Nullable Boolean consentContactFindings42,
             @Nullable Boolean consentPatDataNonEU13,
             @Nullable Boolean consentBioSamplesNonEU33) {
-        Period periodLong = new Period().setStart(dateConsent).setEnd(addYears(birthday, 18));
+        Period periodLong = new Period().setStart(dateConsent).setEnd(
+                this.forMinors ? addYears(birthday, 18) : addYears(dateConsent, 30));
 
         if (this.forMinors && ChronoUnit.YEARS.between(
                 dateConsent.toInstant().atZone(ZoneId.of("Europe/Berlin")).toLocalDate(),
@@ -99,9 +102,41 @@ public class ConsentMapper_1_7_2 {
         );
     }
 
-    public Consent.provisionComponent makeProvisionsWithPeriods(
+    public Consent.provisionComponent revokeProvisions(
+            Date dateConsent,
+            Date birthday,
+            boolean includeRetrospectiveDataCollection,
+            boolean includeNonDSGVOData,
+            boolean includeInsuranceDataCollection,
+            boolean includeBioSamples,
+            boolean includeAddlBioSamples,
+            boolean includeRetrospectiveBioSamples,
+            boolean includeNonDSGVOBioSamples) {
+        Period periodRevoked = new Period().setStart(dateConsent); // No end date set.
+
+        Period periodLong = new Period().setStart(dateConsent).setEnd(
+                this.forMinors ? addYears(birthday, 18) : addYears(dateConsent, 30));
+
+        return makeProvisionsWithDetailedPeriods(
+                periodRevoked, periodRevoked, periodRevoked, periodLong,
+                false, includeRetrospectiveDataCollection ? false : null,
+                includeInsuranceDataCollection ? false : null,
+                includeInsuranceDataCollection ? false : null,
+                includeBioSamples? false : null,
+                includeAddlBioSamples? false : null,
+                includeRetrospectiveBioSamples? false : null,
+                false, false,
+                includeNonDSGVOData? false : null,
+                includeNonDSGVOBioSamples? false : null
+        );
+    }
+
+
+    public Consent.provisionComponent makeProvisionsWithDetailedPeriods(
             Period periodShort,
             Period periodLong,
+            Period periodHighLevelDeny,
+            Period periodRecontactSignificantFindings,
             @Nullable Boolean consentPatDataProsp13,
             @Nullable Boolean consentPatDataRetro13,
             @Nullable Boolean consentInsuranceDataRetro21,
@@ -114,11 +149,10 @@ public class ConsentMapper_1_7_2 {
             @Nullable Boolean consentPatDataNonEU13,
             @Nullable Boolean consentBioSamplesNonEU33) {
 
-
         // Add provisions:
         Consent.provisionComponent provisionComponent = new Consent.provisionComponent();
         provisionComponent.setType(Consent.ConsentProvisionType.DENY);
-        provisionComponent.setPeriod(periodLong);
+        provisionComponent.setPeriod(periodHighLevelDeny);
 
         ArrayList<Consent.provisionComponent> provisions = new ArrayList<>(32);
 
@@ -182,17 +216,7 @@ Einwilligungserklärung und Punkt 1 der Elterninformation beschrieben. */
                     "MDAT retrospektiv speichern verarbeiten",
                     periodLong,
                     consentPatDataRetro13Type));
-            provisions.add(createProvisionComponent(
-                    "2.16.840.1.113883.3.1937.777.24.5.3.46",
-                    "MDAT retrospektiv wissenschaftlich nutzen EU DSGVO NIVEAU",
-                    periodLong,
-                    consentPatDataRetro13Type));
-
-            provisions.add(createProvisionComponent(
-                    "2.16.840.1.113883.3.1937.777.24.5.3.47",
-                    "MDAT retrospektiv zusammenfuehren Dritte",
-                    periodLong,
-                    consentPatDataRetro13Type));
+            /** Provisions  2.16.840.1.113883.3.1937.777.24.5.3.46 und 2.16.840.1.113883.3.1937.777.24.5.3.47 sind inactive **/
         }
         /* Einmalig rückwirkend für die Daten der vergangenen 5 Kalenderjahre. Mit der dafür nötigen
 Übermittlung der Krankenversicherungs-Nummer meines Kindes an das Universitätsklinikum Tübingen
@@ -381,9 +405,32 @@ Patienteninformation). */
         provisions.add(createProvisionComponent(
                 "2.16.840.1.113883.3.1937.777.24.5.3.37",
                 "Rekontaktierung Ergebnisse erheblicher Bedeutung",
-                periodLong,
+                periodRecontactSignificantFindings,
                 Consent.ConsentProvisionType.PERMIT));
         provisionComponent.setProvision(provisions);
         return provisionComponent;
+    }
+
+    public Consent.provisionComponent makeProvisionsWithPeriods(
+            Period periodShort,
+            Period periodLong,
+            @Nullable Boolean consentPatDataProsp13,
+            @Nullable Boolean consentPatDataRetro13,
+            @Nullable Boolean consentInsuranceDataRetro21,
+            @Nullable Boolean consentInsuranceDataProsp22,
+            @Nullable Boolean consentBioSamples33,
+            @Nullable Boolean consentBioSamplesAddl33,
+            @Nullable Boolean consentBioSamplesRetro33,
+            @Nullable Boolean consentContact41,
+            @Nullable Boolean consentContactFindings42,
+            @Nullable Boolean consentPatDataNonEU13,
+            @Nullable Boolean consentBioSamplesNonEU33) {
+        return makeProvisionsWithDetailedPeriods(periodShort, periodLong, periodLong, periodLong,
+                consentPatDataProsp13, consentPatDataRetro13, consentInsuranceDataRetro21,
+                consentInsuranceDataProsp22, consentBioSamples33,
+                consentBioSamplesAddl33, consentBioSamplesRetro33, consentContact41,
+                consentContactFindings42, consentPatDataNonEU13, consentBioSamplesNonEU33
+        );
+
     }
 }

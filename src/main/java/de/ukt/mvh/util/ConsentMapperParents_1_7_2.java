@@ -6,4 +6,8 @@ public class ConsentMapperParents_1_7_2 extends ConsentMapper_1_7_2 {
     public ConsentMapperParents_1_7_2() {
         super(CONSENT_VERSION_PARENTS_1_7_2, true);
     }
+
+    public ConsentMapperParents_1_7_2(boolean revoked) {
+        super(revoked? ConsentMapper_1_7_2.CONSENT_REVOKED_VERSION_1_7_2 : CONSENT_VERSION_PARENTS_1_7_2, true);
+    }
 }

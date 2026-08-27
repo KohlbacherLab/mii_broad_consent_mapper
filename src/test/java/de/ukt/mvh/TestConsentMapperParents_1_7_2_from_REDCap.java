@@ -73,6 +73,7 @@ public class TestConsentMapperParents_1_7_2_from_REDCap {
   }
 ]
 """;
+        var jsonParser = forR4Cached().newJsonParser();
         Consent consent = ConsentMapperParents_1_7_2_from_REDCap.makeConsent(redCapExport,birthday);
         Assertions.assertTrue(consent.equalsDeep(targetConsent));
     }
@@ -127,8 +128,7 @@ public class TestConsentMapperParents_1_7_2_from_REDCap {
         var jsonParser = forR4Cached().newJsonParser();
         ClassLoader classLoader = getClass().getClassLoader();
         var targetConsent = (Resource) jsonParser.parseResource(new FileReader(classLoader.getResource("revoked_consent_parents.json").getPath()));
-
-        Assertions.assertEquals(jsonParser.encodeResourceToString(targetConsent), jsonParser.encodeResourceToString(consent));
+        Assertions.assertTrue(consent.equalsDeep(targetConsent));
     }
 
     @Test
